@@ -30,6 +30,12 @@ $ kubectl delete -f deploy/service_account.yaml
 $ kubectl delete -f deploy/crds/app_v1_appservice_crd.yaml
 ```
 
+# 开发调试
+
+> operator-sdk run --local
+➜  cmdbdemo git:(master) operator-sdk version    
+operator-sdk version: "v0.17.0", commit: "2fd7019f856cdb6f6618e2c3c80d15c3c79d1b6c", kubernetes version: "unknown", go version: "go1.13.10 linux/amd64"
+
 # 核心代码
 
 ```go
