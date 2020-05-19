@@ -171,6 +171,7 @@ func (r *ReconcileCmdbService) Reconcile(request reconcile.Request) (reconcile.R
 			return reconcile.Result{}, err
 		}
 
+		newService.Spec.ClusterIP = oldService.Spec.ClusterIP
 		oldService.Spec = newService.Spec
 		if err := r.client.Update(context.TODO(), oldService); err != nil {
 			return reconcile.Result{}, err
