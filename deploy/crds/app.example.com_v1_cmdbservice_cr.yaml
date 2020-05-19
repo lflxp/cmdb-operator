@@ -1,0 +1,12 @@
+apiVersion: app.example.com/v1
+kind: CmdbService
+metadata:
+  name: example-cmdbservice
+spec:
+  # Add fields here
+  size: 3
+  image: nginx
+  ports:
+    - port: 80
+      targetPort: 80
+      nodePort: 30001
