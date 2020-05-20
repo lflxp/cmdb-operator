@@ -169,7 +169,7 @@ func (r *ReconcileCmdbService) Reconcile(request reconcile.Request) (reconcile.R
 	oldspec := &appv1.CmdbService{}
 	// fmt.Println("55555555555555", instance.Annotations["spec"])
 	if err := json.Unmarshal([]byte(instance.Annotations["spec"]), oldspec); err != nil {
-		data, _ := json.Marshal(instance)
+		// data, _ := json.Marshal(instance)
 		// fmt.Println("222222222222222222", err.Error(), string(data))
 		return reconcile.Result{}, err
 	}
