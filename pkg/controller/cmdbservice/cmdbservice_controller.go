@@ -134,8 +134,10 @@ func (r *ReconcileCmdbService) Reconcile(request reconcile.Request) (reconcile.R
 	if err := r.client.Get(context.TODO(), request.NamespacedName, deploy); err != nil && errors.IsNotFound(err) {
 		// 创建关联资源
 		// 1. 创建Deploy
+		// fmt.Println("111111111111111", request.NamespacedName, deploy.ObjectMeta.Name)
 		deploy := resources.NewDeploy(instance)
 		if err := r.client.Create(context.TODO(), deploy); err != nil {
+			// fmt.Println("2222222222222222", err)
 			return reconcile.Result{}, err
 		}
 		// 2. 创建 Service
@@ -183,6 +185,7 @@ func (r *ReconcileCmdbService) Reconcile(request reconcile.Request) (reconcile.R
 
 		oldDeploy.Spec = newDeploy.Spec
 		if err := r.client.Update(context.TODO(), oldDeploy); err != nil {
+			// fmt.Println("333333333333333", err)
 			return reconcile.Result{}, err
 		}
 

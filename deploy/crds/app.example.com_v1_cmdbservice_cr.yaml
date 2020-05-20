@@ -1,11 +1,16 @@
 apiVersion: app.example.com/v1
 kind: CmdbService
 metadata:
-  name: example-cmdbservice
+  name: neo4j-operator 
 spec:
   # Add fields here
-  size: 3
+  size: 1
   image: nginx
+  env:
+    - name: NEO4J_dbms_security_procedures_unrestricted
+      value: "graphql.*"
+    - name: NEO4J_dbms_security_procedures_whitelist
+      value: "graphql.*"
   ports:
     - port: 80
       targetPort: 80
