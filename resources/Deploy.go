@@ -36,7 +36,8 @@ func NewDeploy(app *appv1.CmdbService) *appsv1.Deployment {
 					Labels: labels,
 				},
 				Spec: corev1.PodSpec{
-					Containers: newContainers(app),
+					ImagePullSecrets: app.Spec.ImagePullSecrets,
+					Containers:       app.Spec.Containers,
 				},
 			},
 			Selector: selector,
@@ -44,21 +45,21 @@ func NewDeploy(app *appv1.CmdbService) *appsv1.Deployment {
 	}
 }
 
-func newContainers(app *appv1.CmdbService) []corev1.Container {
-	containerPorts := []corev1.ContainerPort{}
-	for _, svcPort := range app.Spec.Ports {
-		cport := corev1.ContainerPort{}
-		cport.ContainerPort = svcPort.TargetPort.IntVal
-		containerPorts = append(containerPorts, cport)
-	}
-	return []corev1.Container{
-		{
-			Name:            app.Name,
-			Image:           app.Spec.Image,
-			Resources:       app.Spec.Resource,
-			Ports:           containerPorts,
-			ImagePullPolicy: corev1.PullIfNotPresent,
-			Env:             app.Spec.Envs,
-		},
-	}
-}
+// func newContainers(app *appv1.CmdbService) []corev1.Container {
+// 	containerPorts := []corev1.ContainerPort{}
+// 	for _, svcPort := range app.Spec.Ports {
+// 		cport := corev1.ContainerPort{}
+// 		cport.ContainerPort = svcPort.TargetPort.IntVal
+// 		containerPorts = append(containerPorts, cport)
+// 	}
+// 	return []corev1.Container{
+// 		{
+// 			Name:            app.Name,
+// 			Image:           app.Spec.Image,
+// 			Resources:       app.Spec.Resource,
+// 			Ports:           containerPorts,
+// 			ImagePullPolicy: corev1.PullIfNotPresent,
+// 			Env:             app.Spec.Envs,
+// 		},
+// 	}
+// }

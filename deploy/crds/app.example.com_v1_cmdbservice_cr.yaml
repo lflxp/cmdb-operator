@@ -5,14 +5,46 @@ metadata:
 spec:
   # Add fields here
   size: 1
-  image: nginx
-  env:
-    - name: NEO4J_dbms_security_procedures_unrestricted
-      value: "graphql.*"
-    - name: NEO4J_dbms_security_procedures_whitelist
-      value: "graphql.*"
+  resources: {}
   ports:
     - port: 80
       targetPort: 80
-      nodePort: 30003
-  
+      name: nginx-service
+    - port: 8000
+      targetPort: 80
+      name: neo4japi-service
+  imagePullSecrets:
+  - name: harbor
+  containers: 
+  - env:
+    - name: POD_IP
+      valueFrom:
+        fieldRef:
+          fieldPath: status.podIP
+    image: nginx
+    name: nginx-proxy
+    ports:
+    - containerPort: 80
+      name: nginx-http
+      protocol: TCP
+    resources:
+      limits:
+        cpu: 100m
+      requests:
+        cpu: 50m
+    readinessProbe:
+      failureThreshold: 10
+      httpGet:
+        path: /
+        port: web
+        scheme: HTTP
+      initialDelaySeconds: 60
+      periodSeconds: 10
+      successThreshold: 1
+      timeoutSeconds: 10
+  - name: neo4japi
+    image: neo4japi:dev
+    imagePullPolicy: Always
+    ports:
+    - containerPort: 8000
+      protocol: TCP

@@ -26,8 +26,9 @@ func NewService(app *appv1.CmdbService) *corev1.Service {
 			},
 		},
 		Spec: corev1.ServiceSpec{
-			Type:  corev1.ServiceTypeNodePort,
-			Ports: app.Spec.Ports,
+			// Type:  corev1.ServiceTypeNodePort,
+			Type:  corev1.ServiceTypeClusterIP,
+			Ports: app.Spec.Services,
 			Selector: map[string]string{
 				"app": app.Name,
 			},

@@ -79,16 +79,21 @@ func (in *CmdbServiceSpec) DeepCopyInto(out *CmdbServiceSpec) {
 		**out = **in
 	}
 	in.Resource.DeepCopyInto(&out.Resource)
-	if in.Envs != nil {
-		in, out := &in.Envs, &out.Envs
-		*out = make([]corev1.EnvVar, len(*in))
+	if in.Services != nil {
+		in, out := &in.Services, &out.Services
+		*out = make([]corev1.ServicePort, len(*in))
+		copy(*out, *in)
+	}
+	if in.Containers != nil {
+		in, out := &in.Containers, &out.Containers
+		*out = make([]corev1.Container, len(*in))
 		for i := range *in {
 			(*in)[i].DeepCopyInto(&(*out)[i])
 		}
 	}
-	if in.Ports != nil {
-		in, out := &in.Ports, &out.Ports
-		*out = make([]corev1.ServicePort, len(*in))
+	if in.ImagePullSecrets != nil {
+		in, out := &in.ImagePullSecrets, &out.ImagePullSecrets
+		*out = make([]corev1.LocalObjectReference, len(*in))
 		copy(*out, *in)
 	}
 	return
