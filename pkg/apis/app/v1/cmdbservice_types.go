@@ -30,6 +30,7 @@ type CmdbServiceStatus struct {
 	// Important: Run "operator-sdk generate k8s" to regenerate code after modifying this file
 	// Add custom validation using kubebuilder tags: https://book-v1.book.kubebuilder.io/beyond_basics/generating_crd.html
 	appsv1.DeploymentStatus `json:",inline"`
+	PodNames                []string `json:"podnames"`
 }
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object

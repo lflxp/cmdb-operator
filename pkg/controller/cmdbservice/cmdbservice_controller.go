@@ -108,6 +108,28 @@ func (r *ReconcileCmdbService) Reconcile(request reconcile.Request) (reconcile.R
 		return reconcile.Result{}, err
 	}
 
+	// 获取podList
+	podList := &corev1.PodList{}
+	listOpts := []client.ListOption{
+		client.InNamespace(instance.Namespace),
+		client.MatchingLabels(map[string]string{"app": instance.Name}),
+	}
+	if err := r.client.List(context.TODO(), podList, listOpts...); err != nil {
+		reqLogger.Error(err, "Failed to List pods", "Cmdb.Namespace", instance.Namespace, "Cmdb.Name", instance.Name)
+		return reconcile.Result{}, err
+	}
+
+	podNames := getPodNames(podList.Items)
+	// Update status.PodNames if needed
+	if !reflect.DeepEqual(podNames, instance.Status.PodNames) {
+		instance.Status.PodNames = podNames
+		err := r.client.Status().Update(context.TODO(), instance)
+		if err != nil {
+			reqLogger.Error(err, "Failed to update Cmdb Status")
+			return reconcile.Result{}, err
+		}
+	}
+
 	deploy := &appsv1.Deployment{}
 	if err := r.client.Get(context.TODO(), request.NamespacedName, deploy); err != nil && errors.IsNotFound(err) {
 		// 创建关联资源
@@ -209,6 +231,15 @@ func (r *ReconcileCmdbService) Reconcile(request reconcile.Request) (reconcile.R
 	// // Pod already exists - don't requeue
 	// reqLogger.Info("Skip reconcile: Pod already exists", "Pod.Namespace", found.Namespace, "Pod.Name", found.Name)
 	// return reconcile.Result{}, nil
+}
+
+// getPodNames returns the pod names of the array of pods passed in
+func getPodNames(pods []corev1.Pod) []string {
+	var podNames []string
+	for _, pod := range pods {
+		podNames = append(podNames, pod.Name)
+	}
+	return podNames
 }
 
 // newPodForCR returns a busybox pod with the same name/namespace as the cr

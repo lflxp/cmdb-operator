@@ -108,6 +108,11 @@ func (in *CmdbServiceSpec) DeepCopy() *CmdbServiceSpec {
 func (in *CmdbServiceStatus) DeepCopyInto(out *CmdbServiceStatus) {
 	*out = *in
 	in.DeploymentStatus.DeepCopyInto(&out.DeploymentStatus)
+	if in.PodNames != nil {
+		in, out := &in.PodNames, &out.PodNames
+		*out = make([]string, len(*in))
+		copy(*out, *in)
+	}
 	return
 }
 
